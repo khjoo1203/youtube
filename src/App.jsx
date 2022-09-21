@@ -1,8 +1,9 @@
 import styles from './App.module.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import VideoList from './components/video_list/VideoList';
 import SearchHeader from './components/search_header/SearchHeader';
 import VideoDetail from './components/video_detail/VideoDetail';
+
 
 function App({ youtube }) {
   const [videos, setVideos] = useState([]);
@@ -11,19 +12,19 @@ function App({ youtube }) {
   const selectVideo = (video) => {
     setSelectedVideo(video);
   };
-  const search = (query) => {
+  const search = useCallback((query) => {
     youtube
       .search(query) //
       .then((videos) => {
         setVideos(videos)
         setSelectedVideo(null);
       });
-  };
+  }, [youtube])
   useEffect(() => {
     youtube
       .mostPopular() //
       .then((videos) => setVideos(videos));
-  }, []);
+  }, [youtube]);
   return (
     <div className={styles.app}>
       <SearchHeader onSearch={search} />
